@@ -13,8 +13,6 @@ using namespace std;
 #define sp ' '
 
 
-
-
 vector<ll> depth, low;
 vector<bool> vis, is_bridge;
 vector<pair<int, int> > ans;
@@ -26,6 +24,7 @@ vector<vector<pair<int, int> > > adj;
 void dfs(int u, int p) {
     vis[u] = true;
     low[u] = depth[u];
+    int kids = 0;
     for (auto to: adj[u]) {
         int v = to.first;
         int index = to.second;
@@ -33,18 +32,19 @@ void dfs(int u, int p) {
         if (vis[v]) {
             // back edge
             low[u] = min(low[u], low[v]);
-        } else {
-            // Forward edge (tree edge)
-            depth[v] = depth[u] + 1;
-            dfs(v, u);
-            low[u] = min(low[u], low[v]);
-            if (low[v] >= depth[u]) {
-                // if bridge
-                is_bridge[index] = true;
-            }
-            if (low[v] >= depth[u]) {
-                // this is Articulation Points
-            }
+            continue;
+        }
+        // Forward edge (tree edge)
+        depth[v] = depth[u] + 1;
+        dfs(v, u);
+        low[u] = min(low[u], low[v]);
+        if (low[v] >= depth[u]) {
+            // if bridge
+            is_bridge[index] = true;
+        }
+        if (low[v] >= depth[u]) {
+            // this is Articulation Points if
+            // ( p!= -1 || kids > 1 )
         }
     }
 }
